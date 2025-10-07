@@ -12,19 +12,6 @@ def initialize_circuit(inColors):
     return qc, qubitDict
 
 
-def get_bpCP(connectiveKey, inColors):
-    """
-    Generate the basis plus connective decompositions for a given connective and input colors.
-    :param connectiveKey: Same connective strings as in tnreason.application
-    :param inColors: List of input colors
-    :return: Mod2-basis+ CP decomposition by a list of slices
-    """
-    if connectiveKey == "and":
-        return [{c: 1 for c in inColors}]
-    elif connectiveKey == "or":
-        return [{}, {c: 0 for c in inColors}]
-
-
 def add_directed_block(qc, qubitDict, basPlusCP, headColor):
     if headColor not in qubitDict:
         qc.add_register(qk.QuantumRegister(1, name=headColor))
@@ -37,6 +24,10 @@ def add_directed_block(qc, qubitDict, basPlusCP, headColor):
 
 
 def add_slice(qc, qubitDict, posDict, headColor):
+    if len(posDict) == 0:
+        qc.x(qubitDict[headColor])
+        return
+
     for inColor in posDict:
         if posDict[inColor] == 0:
             qc.x(qubitDict[inColor])
@@ -65,10 +56,4 @@ if __name__ == "__main__":
     qc.draw("mpl")
     plt.show()
 
-    # qc, qubitDict = initialize_circuit(["a", "b"])
-    # bpCP = get_bpCP("and", ["a","b"])
-    # qc, qubitDict = add_directed_block(qc, qubitDict, bpCP, "cHead")
-    # add_measurement(qc, qubitDict, ["c","a","b"])
-    #
-    # qc.draw("mpl")
-    # plt.show()
+
