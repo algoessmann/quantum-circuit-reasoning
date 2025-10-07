@@ -1,9 +1,10 @@
-import qc_from_bpCP as qcfb
-
 import numpy as np
 
+"""
+Implements the mod2-basis+ calculus for logical formulas in nested list representation.
+"""
 
-def formula_to_circuits(qc, qubitDict, formula):
+def add_formula_to_circuit(circ, formula):
     """
     Recursively convert a logical formula into a quantum circuit using mod2-basis+ CP decomposition of each connective.
     :param qc:
@@ -12,14 +13,15 @@ def formula_to_circuits(qc, qubitDict, formula):
     :return:
     """
     if isinstance(formula, str):
-        return qc, qubitDict
+        return circ
     else:
         for subFormula in formula[1:]:
-            qc, qubitDict = formula_to_circuits(qc, qubitDict, subFormula)
+            circ = add_formula_to_circuit(circ, subFormula)
 
         connective = formula[0]
         inColors = [get_formula_string(subf) for subf in formula[1:]]
-        return qcfb.add_directed_block(qc, qubitDict, get_bpCP(connective, inColors), get_formula_string(formula))
+        circ.add_directed_block(get_bpCP(connective, inColors), get_formula_string(formula))
+        return circ
 
 
 def get_formula_string(formula):
@@ -34,14 +36,6 @@ def get_formula_string(formula):
         return "(" + formula[0] + "_" + "_".join(get_formula_string(subf) for subf in formula[1:]) + ")"
 
 
-aliases = {
-    "xor": "neq",
-    "lpas": "pas0",
-    "id": "pas0",
-    "not": "npas0"
-}
-
-
 def get_bpCP(connectiveKey, inColors):
     """
     Generate the basis plus connective decompositions for a given connective and input colors.
@@ -49,6 +43,12 @@ def get_bpCP(connectiveKey, inColors):
     :param inColors: List of input colors
     :return: Mod2-basis+ CP decomposition by a list of slices
     """
+    aliases = {
+        "xor": "neq",
+        "lpas": "pas0",
+        "id": "pas0",
+        "not": "npas0"
+    }
     if connectiveKey in aliases:
         connectiveKey = aliases[connectiveKey]
 
@@ -83,14 +83,3 @@ def get_bpCP(connectiveKey, inColors):
             int(binDigits[2 ** order - 1 - int("".join(map(str, indices)), 2)]) == 1]
 
 
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-
-    qc, qubitDict = qcfb.initialize_circuit(["a", "b", "c"])
-    formula_to_circuits(qc, qubitDict, ["or", ["not", "b"], "c"])
-
-    qc, qubitDict = qcfb.initialize_circuit(["a", "b", "c"])
-    formula_to_circuits(qc, qubitDict, ["01100001", "a",  "b", "c"])
-
-    qc.draw("mpl")
-    plt.show()

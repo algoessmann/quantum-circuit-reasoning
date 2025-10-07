@@ -1,6 +1,30 @@
 import qiskit as qk
 
+from qcreason.representation import get_formula_string, get_bpCP
 
+
+def formula_to_circuits(qc, qubitDict, formula):
+    """
+    Recursively convert a logical formula into a quantum circuit using mod2-basis+ CP decomposition of each connective.
+    :param qc:
+    :param qubitDict:
+    :param formula:
+    :return:
+    """
+    if isinstance(formula, str):
+        return qc, qubitDict
+    else:
+        for subFormula in formula[1:]:
+            qc, qubitDict = formula_to_circuits(qc, qubitDict, subFormula)
+
+        connective = formula[0]
+        inColors = [get_formula_string(subf) for subf in formula[1:]]
+
+        import qc_from_bpCP as qcfb
+        return qcfb.add_directed_block(qc, qubitDict, get_bpCP(connective, inColors), get_formula_string(formula))
+
+
+## To constructor of circuit
 def initialize_circuit(inColors):
     registers = [qk.QuantumRegister(1, name=c) for c in inColors]
     qc = qk.QuantumCircuit(*registers)
@@ -52,6 +76,12 @@ if __name__ == "__main__":
     bpCP = [{"a": 1, "b": 0}, {"b": 1}]
     qc, qubitDict = add_directed_block(qc, qubitDict, bpCP, "c")
     add_measurement(qc, qubitDict, ["c", "a", "b"])
+
+    qc, qubitDict = initialize_circuit(["a", "b", "c"])
+    formula_to_circuits(qc, qubitDict, ["or", ["not", "b"], "c"])
+
+    qc, qubitDict = initialize_circuit(["a", "b", "c", "d"])
+    formula_to_circuits(qc, qubitDict, ["01100001", ["xor", "a", "b"], "c", "d"])
 
     qc.draw("mpl")
     plt.show()
