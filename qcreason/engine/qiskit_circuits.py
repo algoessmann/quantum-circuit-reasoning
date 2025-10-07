@@ -37,3 +37,8 @@ class QiskitCircuit:
 
         for posDict in basPlusCP:
             self.add_slice(posDict, headColor)
+
+    def add_measurement(self, tbMeasured):
+        cr = qk.ClassicalRegister(len(tbMeasured), name="measure")
+        self.circuit.add_register(cr)
+        self.circuit.measure([self.qubitDict[c] for c in tbMeasured], range(len(tbMeasured)))

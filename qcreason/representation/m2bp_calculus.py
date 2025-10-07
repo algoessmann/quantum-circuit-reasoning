@@ -4,6 +4,7 @@ import numpy as np
 Implements the mod2-basis+ calculus for logical formulas in nested list representation.
 """
 
+
 def add_formula_to_circuit(circ, formula):
     """
     Recursively convert a logical formula into a quantum circuit using mod2-basis+ CP decomposition of each connective.
@@ -47,7 +48,7 @@ def get_bpCP(connectiveKey, inColors):
         "xor": "neq",
         "lpas": "pas0",
         "id": "pas0",
-        "not": "npas0"
+        # "not": "npas0"
     }
     if connectiveKey in aliases:
         connectiveKey = aliases[connectiveKey]
@@ -60,10 +61,12 @@ def get_bpCP(connectiveKey, inColors):
         return [{inColor: 1 for inColor in inColors}, {inColor: 0 for inColor in inColors}]
     elif connectiveKey == "imp":
         return [{}, {**{inColor: 0 for inColor in inColors[:-1]}, inColors[-1]: 0}]
+    elif connectiveKey == "not":
+        return [{inColors[0]: 0}]
     elif connectiveKey.startswith("pas"):
         pos = int(connectiveKey[3:])
         assert pos < len(inColors)
-        return [{inColors[pos]: 0}]
+        return [{inColors[pos]: 1}]
     elif connectiveKey.startswith("n"):
         return [{}] + get_bpCP(connectiveKey[1:], inColors)
 
@@ -81,5 +84,3 @@ def get_bpCP(connectiveKey, inColors):
     return [{inColor: indices[i] for i, inColor in enumerate(inColors)} for indices in
             np.ndindex(*[2 for _ in range(order)]) if
             int(binDigits[2 ** order - 1 - int("".join(map(str, indices)), 2)]) == 1]
-
-
