@@ -1,1 +1,3 @@
-from qcreason.representation.m2bp_calculus import add_formula_to_circuit, get_formula_string, get_bpCP
+from qcreason.representation.m2bp_connectives import get_bpCP_connective
+from qcreason.representation.formulas_to_circuit import get_formula_string, add_formula_to_circuit, get_color_param_dict
+from qcreason.representation.sampling_ancilla import calculate_angles

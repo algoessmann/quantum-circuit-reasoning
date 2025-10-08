@@ -5,39 +5,7 @@ Implements the mod2-basis+ calculus for logical formulas in nested list represen
 """
 
 
-def add_formula_to_circuit(circ, formula):
-    """
-    Recursively convert a logical formula into a quantum circuit using mod2-basis+ CP decomposition of each connective.
-    :param qc:
-    :param qubitDict:
-    :param formula:
-    :return:
-    """
-    if isinstance(formula, str):
-        return circ
-    else:
-        for subFormula in formula[1:]:
-            circ = add_formula_to_circuit(circ, subFormula)
-
-        connective = formula[0]
-        inColors = [get_formula_string(subf) for subf in formula[1:]]
-        circ.add_directed_block(get_bpCP(connective, inColors), get_formula_string(formula))
-        return circ
-
-
-def get_formula_string(formula):
-    """
-    Generate a string representation of a formula, used for qubit coloring.
-    :param formula:
-    :return:
-    """
-    if isinstance(formula, str):
-        return formula
-    else:
-        return "(" + formula[0] + "_" + "_".join(get_formula_string(subf) for subf in formula[1:]) + ")"
-
-
-def get_bpCP(connectiveKey, inColors):
+def get_bpCP_connective(connectiveKey, inColors):
     """
     Generate the basis plus connective decompositions for a given connective and input colors.
     :param connectiveKey: Same connective strings as in tnreason.representation.basisPlus_calculus
@@ -60,7 +28,7 @@ def get_bpCP(connectiveKey, inColors):
     elif connectiveKey == "eq":
         return [{inColor: 1 for inColor in inColors}, {inColor: 0 for inColor in inColors}]
     elif connectiveKey == "imp":
-        return [{}, {**{inColor: 0 for inColor in inColors[:-1]}, inColors[-1]: 0}]
+        return [{}, {**{inColor: 1 for inColor in inColors[:-1]}, inColors[-1]: 0}]
     elif connectiveKey == "not":
         return [{inColors[0]: 0}]
     elif connectiveKey.startswith("pas"):
@@ -68,7 +36,7 @@ def get_bpCP(connectiveKey, inColors):
         assert pos < len(inColors)
         return [{inColors[pos]: 1}]
     elif connectiveKey.startswith("n"):
-        return [{}] + get_bpCP(connectiveKey[1:], inColors)
+        return [{}] + get_bpCP_connective(connectiveKey[1:], inColors)
 
     ## Then understood as a Wolfram number
     try:

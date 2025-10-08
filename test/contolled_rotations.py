@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-
+## Into qiskit circuit in engine
 def add_rotation_slices(sliceList, headColor):
     for angle, posDict in sliceList:
         if len(posDict) == 0:

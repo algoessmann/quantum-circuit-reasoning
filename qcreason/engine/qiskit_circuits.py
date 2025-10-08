@@ -42,3 +42,38 @@ class QiskitCircuit:
         cr = qk.ClassicalRegister(len(tbMeasured), name="measure")
         self.circuit.add_register(cr)
         self.circuit.measure([self.qubitDict[c] for c in tbMeasured], range(len(tbMeasured)))
+
+    def add_controlled_rotation(self, sliceTuple, headColor):
+        """
+        Add a multi-controlled RY rotation.
+        :param sliceTuple: specifies in a tuple (angle, controlDict), where controlDict stored in the keys the control variables and in the values on which states
+        :param headColor: qubit color to the target qubit
+        :return:
+        """
+        angle, controlDict = sliceTuple
+
+
+        if headColor not in self.qubitDict:
+            self.add_qubit(headColor)
+
+        if len(controlDict) == 0:
+            self.circuit.ry(angle, self.qubitDict[headColor])
+            return
+        elif angle == 0:
+            return
+
+        for inColor in controlDict:
+            if controlDict[inColor] == 0:
+                self.circuit.x(self.qubitDict[inColor])
+
+        control_qubits = [self.qubitDict[inColor] for inColor in controlDict]
+        target_qubit = self.qubitDict[headColor]
+
+        ry_gate = qk.circuit.library.RYGate(angle)
+        cry_gate = ry_gate.control(len(control_qubits))
+
+        self.circuit.append(cry_gate, control_qubits + [target_qubit])
+
+        for inColor in controlDict:
+            if controlDict[inColor] == 0:
+                self.circuit.x(self.qubitDict[inColor])
