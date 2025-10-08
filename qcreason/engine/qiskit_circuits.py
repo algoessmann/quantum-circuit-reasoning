@@ -77,3 +77,8 @@ class QiskitCircuit:
         for inColor in controlDict:
             if controlDict[inColor] == 0:
                 self.circuit.x(self.qubitDict[inColor])
+
+    def visualize(self):
+        import matplotlib.pyplot as plt
+        self.circuit.draw("mpl")
+        plt.show()

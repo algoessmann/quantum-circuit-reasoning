@@ -66,6 +66,34 @@ class PennyLaneCircuit:
         """Mark which qubits will be measured."""
         self.tbMeasured = tbMeasured
 
+    def add_controlled_rotation(self, sliceTuple, headColor):
+        """
+        Add a controlled rotation gate to the circuit.
+        :param sliceTuple: A tuple containing (control_colors, angle).
+                           control_colors is a list of control qubits.
+                           angle is the rotation angle.
+        :param headColor: The target qubit for the rotation.
+        """
+        angle, controlDict = sliceTuple
+        if angle == 0:
+            return
+        control_colors = list(controlDict.keys())
+
+        # Ensure all control qubits and the target qubit exist
+        for color in control_colors:
+            if color not in self.qubitDict:
+                self.add_qubit(color)
+        if headColor not in self.qubitDict:
+            self.add_qubit(headColor)
+
+        # Add the gates realizing the controlled rotation
+        for inColor, val in controlDict.items():
+            if val == 0:
+                self.operations.append(("X", [inColor]))
+        self.operations.append(("CRot", control_colors, headColor, angle))
+        for inColor, val in controlDict.items():
+            if val == 0:
+                self.operations.append(("X", [inColor]))
     def _build_qnode(self):
         """Build a QNode dynamically from the stored operations."""
         dev = qml.device("default.qubit", wires=self.colors, shots=1000)
@@ -80,7 +108,10 @@ class PennyLaneCircuit:
                 elif op[0] == "MCX":
                     controls, target = op[1], op[2]
                     qml.ctrl(qml.PauliX, control=controls)(wires=target)
-
+                elif op[0] == "CRot":
+                    controls, target, angle = op[1], op[2], op[3]
+    #                qml.ctrl(qml.RZ(angle), control=controls)(wires=target)
+                    qml.ctrl(lambda wires: qml.RY(angle, wires=wires), control=controls)(wires=target)
             return qml.sample(wires=self.tbMeasured)
 
         return circuit
