@@ -94,9 +94,9 @@ class PennyLaneCircuit:
         for inColor, val in controlDict.items():
             if val == 0:
                 self.operations.append(("X", [inColor]))
-    def _build_qnode(self):
+    def _build_qnode(self, shots=1000):
         """Build a QNode dynamically from the stored operations."""
-        dev = qml.device("default.qubit", wires=self.colors, shots=1000)
+        dev = qml.device("default.qubit", wires=self.colors, shots=shots)
 
         @qml.qnode(dev)
         def circuit():
@@ -129,7 +129,7 @@ class PennyLaneCircuit:
 
     def run(self, shots=1024):
         """Execute the circuit and return measurement results."""
-        circuit = self._build_qnode()
+        circuit = self._build_qnode(shots=shots)
         samples = circuit()
         return samples
 

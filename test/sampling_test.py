@@ -2,15 +2,18 @@ import qcreason.representation.formulas_to_circuit
 from qcreason import engine
 from qcreason import representation
 
+import math
+
 circuitProvider = "PennyLaneCircuit" # "QiskitCircuit"
 
-disVariables = ["sledz", "jaszczur", "kaczka"]
+disVariables = ["sledz", "jaszczur", "kaczka", "jaskuka"]
 circ = engine.get_circuit(circuitProvider)(disVariables)
 
 weightedFormulas = {
     "f1": ["imp", "sledz", "jaszczur", True],
     "f2": ["and", "jaszczur", "kaczka", False],
-    "f3": ["or", "sledz", "kaczka", -1]
+    "f3": ["or", "sledz", "kaczka", -1],
+    "f4" : ["lpas", "jaskuka", 1]
 }
 
 for formulaKey in weightedFormulas:
@@ -23,12 +26,17 @@ headColor = "samplingAncilla"
 for sliceTuple in sliceTuples:
     circ.add_controlled_rotation(sliceTuple, headColor)
 
-circ.add_measurement(disVariables + ["(imp_sledz_jaszczur)", "(and_jaszczur_kaczka)"] + [headColor])
-circ.visualize()
+circ.add_measurement(disVariables + [headColor])
+results = circ.run(1000)
 
-results = circ.run(shots=100)
+def filter_results(results):
+    ## Filter those where sampling ancilla is true
+    return [result[:-1] for result in results if result[-1] == 1]
 
-for i in range(100):
-    assert not results[i][-1] or results[i][-3]
-    assert not results[i][-1] or not results[i][-2]
+filtered = filter_results(results)
+jaskukaTrueCount = len([res for res in filtered if res[3]==1])
 
+print("{} out of {} samples accepted.".format(len(filtered),len(results)))
+print("Expectation rate of f4 is {} and estimated by {}.".format(math.e/(math.e+1), jaskukaTrueCount/len(filtered)))
+
+assert abs(jaskukaTrueCount/len(filtered) - math.e/(math.e+1)) < 0.05
