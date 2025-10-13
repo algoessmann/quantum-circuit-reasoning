@@ -38,12 +38,21 @@ def calculate_angles(canParamDict):
 
     return angleSlices
 
-def compute_and_activate(circuit, weightedFormulaDict, ancillaColor="samplingAncilla"):
+def compute_and_activate(circuit, weightedFormulaDict, ancillaColor="samplingAncilla", adjoint=False):
+    angleTuples = calculate_angles(get_color_param_dict(weightedFormulaDict))
+
+    if adjoint:
+        for angleTuple in angleTuples[::-1]:
+            circuit.add_controlled_rotation((-angleTuple[0],angleTuple[1]), ancillaColor)
+        for formulaKey in list(weightedFormulaDict.keys())[::-1]:
+            circuit = mf.add_formula_to_circuit(circuit, weightedFormulaDict[formulaKey][:-1])
+        return circuit
+
     ## Compute the statistic formulas
     for formulaKey in weightedFormulaDict:
         circuit = mf.add_formula_to_circuit(circuit, weightedFormulaDict[formulaKey][:-1])
     ## Compute the sampling ancilla for activation
-    angleTuples = calculate_angles(get_color_param_dict(weightedFormulaDict))
+
     for angleTuple in angleTuples:
         circuit.add_controlled_rotation(angleTuple, ancillaColor)
     return circuit
@@ -52,6 +61,31 @@ def get_color_param_dict(weightedFormulas):
     return {mf.get_formula_string(weightedFormulas[formulaKey][:-1]): weightedFormulas[formulaKey][-1] for formulaKey in
             weightedFormulas}
 
-#def amplify(circuit, weightedFormulaDict, amplificationNum, ancillaColor="samplingAncilla"):
-#    for amplificationStep in range(amplificationNum):
-#        circuit = compute_and_activate(circuit, weightedFormulaDict, ancillaColor)
+def reflect_groundstate(circuit):
+    ## Reflect on ground state: X, multi-controlled Z, X
+    for color in circuit.colors:
+        circuit.add_slice(posDict={}, headColor=color)
+
+    ## Phase flip of the all-one state
+    if len(circuit.colors) == 1:
+        circuit.add_PauliZ(circuit.colors[0])
+    else:
+        circuit.add_slice(posDict={color : 1 for color in circuit.colors[:-1]}, headColor=circuit.colors[-1])
+        circuit.add_PauliZ(circuit.colors[-1])
+        circuit.add_slice(posDict={color : 1 for color in circuit.colors[:-1]}, headColor=circuit.colors[-1])
+
+    for color in circuit.colors:
+        circuit.add_slice(posDict={}, headColor=color)
+
+    return circuit
+
+def amplify(circuit, weightedFormulaDict, amplificationNum, ancillaColor="samplingAncilla"):
+    for amplificationStep in range(amplificationNum):
+        ## Reflect on ancilla: Pauli-Z
+        circuit.add_PauliZ(ancillaColor)
+
+        circuit = compute_and_activate(circuit, weightedFormulaDict, ancillaColor, adjoint=True)
+        circuit = reflect_groundstate(circuit)
+        circuit = compute_and_activate(circuit, weightedFormulaDict, ancillaColor, adjoint=False)
+
+    return circuit

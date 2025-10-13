@@ -1,26 +1,27 @@
 from qcreason import engine, representation
 import  matplotlib.pyplot as plt
 
-circuitProvider =  "QiskitCircuit"
+circuitProvider =  "PennyLaneCircuit"
 
-disVariables = ["sledz", "jaszczur", "kaczka"]
-circ = engine.get_circuit(circuitProvider)(disVariables)
-circ = representation.formulas_to_circuit.add_formula_to_circuit(circ, ["imp", "sledz", "jaszczur"])
+disVariables = ["sledz", "jaszczur", "kaczka", "jaskuka", "pstrag"]
+weightedFormulas = {"f1": ["imp", "sledz", "jaszczur", -3],
+                    "f2": ["id", "kaczka", False],
+                    "f3": ["id", "jaskuka", True],
+                    "f4": ["id", "pstrag", 0.5]}
 
+def acceptanceRate(results):
+    return sum([result[-1] for result in results])/len(results)
 
+for amiplitNum in range(20):
+    circ = engine.get_circuit(circuitProvider)(disVariables)
+    circ = representation.compute_and_activate(circ, weightedFormulas)
+    circ = representation.amplify(circ, weightedFormulas, amiplitNum)
+    circ.add_measurement(disVariables + ["samplingAncilla"])
+    #circ.visualize()
+    shotNum = 10000
+    results = circ.run(shots=shotNum)
+    print(acceptanceRate(results))
+    #print(results)
 
-import qiskit as qk
-
-
-reflect_0 = qk.QuantumCircuit(*[qk.QuantumRegister(1, name=c) for c in disVariables])
-n = len(disVariables)
-reflect_0.x(range(n))
-reflect_0.h(n-1)
-reflect_0.mcx(list(range(n-1)), n-1)
-reflect_0.h(n-1)
-reflect_0.x(range(n))
-
-composed = circ.circuit.compose(reflect_0).compose(circ.circuit.inverse())
-
-composed.draw("mpl")
-plt.show()
+    #for result in results: ## Check the first formula: Needs to be hard!
+    #    assert not result[-1] or (result[0] and not result[1])

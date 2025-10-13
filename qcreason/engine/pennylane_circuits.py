@@ -105,6 +105,8 @@ class PennyLaneCircuit:
                     qml.Hadamard(wires=op[1][0])
                 elif op[0] == "X":
                     qml.PauliX(wires=op[1][0])
+                elif op[0] == "Z":
+                    qml.PauliZ(wires=op[1][0])
                 elif op[0] == "MCX":
                     controls, target = op[1], op[2]
                     qml.ctrl(qml.PauliX, control=controls)(wires=target)
@@ -132,6 +134,12 @@ class PennyLaneCircuit:
         circuit = self._build_qnode(shots=shots)
         samples = circuit()
         return samples
+
+    def add_PauliZ(self, color):
+        """Add a Pauli-Z gate to the specified qubit."""
+        if color not in self.qubitDict:
+            self.add_qubit(color)
+        self.operations.append(("Z", [color]))
 
 
 if __name__ == "__main__":
