@@ -32,7 +32,3 @@ def add_formula_to_circuit(circ, formula):
         circ.add_directed_block(mc.get_bpCP_connective(connective, inColors), get_formula_string(formula))
         return circ
 
-
-def get_color_param_dict(weightedFormulas):
-    return {get_formula_string(weightedFormulas[formulaKey][:-1]): weightedFormulas[formulaKey][-1] for formulaKey in
-            weightedFormulas}

@@ -1,3 +1,5 @@
+from qcreason.representation import m2bp_formulas as mf
+
 import numpy as np
 
 
@@ -35,3 +37,21 @@ def calculate_angles(canParamDict):
                                 {var: vals[i] for i, var in enumerate(controlVariables)}))
 
     return angleSlices
+
+def compute_and_activate(circuit, weightedFormulaDict, ancillaColor="samplingAncilla"):
+    ## Compute the statistic formulas
+    for formulaKey in weightedFormulaDict:
+        circuit = mf.add_formula_to_circuit(circuit, weightedFormulaDict[formulaKey][:-1])
+    ## Compute the sampling ancilla for activation
+    angleTuples = calculate_angles(get_color_param_dict(weightedFormulaDict))
+    for angleTuple in angleTuples:
+        circuit.add_controlled_rotation(angleTuple, ancillaColor)
+    return circuit
+
+def get_color_param_dict(weightedFormulas):
+    return {mf.get_formula_string(weightedFormulas[formulaKey][:-1]): weightedFormulas[formulaKey][-1] for formulaKey in
+            weightedFormulas}
+
+#def amplify(circuit, weightedFormulaDict, amplificationNum, ancillaColor="samplingAncilla"):
+#    for amplificationStep in range(amplificationNum):
+#        circuit = compute_and_activate(circuit, weightedFormulaDict, ancillaColor)

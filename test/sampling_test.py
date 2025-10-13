@@ -1,4 +1,4 @@
-import qcreason.representation.formulas_to_circuit
+
 from qcreason import engine
 from qcreason import representation
 
@@ -17,7 +17,7 @@ weightedFormulas = {
 }
 
 for formulaKey in weightedFormulas:
-    circ = qcreason.representation.formulas_to_circuit.add_formula_to_circuit(circ, weightedFormulas[formulaKey][:-1])
+    circ = representation.add_formula_to_circuit(circ, weightedFormulas[formulaKey][:-1])
 
 sliceTuples = representation.calculate_angles(representation.get_color_param_dict(weightedFormulas))
 
