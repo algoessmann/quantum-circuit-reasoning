@@ -8,8 +8,12 @@ class QiskitCircuit:
         self.circuit = qk.QuantumCircuit(*registers)
         self.qubitDict = {**{colors[i]: self.circuit.qubits[i] for i in range(len(colors))}}
 
-        for inColor in colors:
-            self.circuit.h(self.qubitDict[inColor])
+#        for inColor in colors:
+#            self.circuit.h(self.qubitDict[inColor])
+
+    def add_hadamards(self, colors):
+        for color in colors:
+            self.circuit.h(self.qubitDict[color])
 
     def add_qubit(self, color):
         if color not in self.qubitDict:

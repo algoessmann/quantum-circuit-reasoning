@@ -8,6 +8,7 @@ circuitProvider = "PennyLaneCircuit" # "QiskitCircuit"
 
 disVariables = ["sledz", "jaszczur", "kaczka", "jaskuka"]
 circ = engine.get_circuit(circuitProvider)(disVariables)
+circ.add_hadamards(disVariables)
 
 weightedFormulas = {
     "f1": ["imp", "sledz", "jaszczur", True],

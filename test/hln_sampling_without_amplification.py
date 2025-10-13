@@ -12,7 +12,9 @@ weightedFormulas = {
 }
 
 circ = engine.get_circuit(circuitProvider)(disVariables)
-circ = representation.compute_and_activate(circ, weightedFormulas)
+circ.add_hadamards(disVariables)
+circ = representation.compute_and_activate(circ, weightedFormulas, atomColors=disVariables)
+circ = representation.amplify(circ, weightedFormulas, 1, atomColors=disVariables)
 circ.add_measurement(disVariables + ["(imp_sledz_jaszczur)", "(and_jaszczur_kaczka)"] + ["samplingAncilla"])
 #circ.visualize()
 

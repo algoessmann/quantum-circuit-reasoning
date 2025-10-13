@@ -17,11 +17,11 @@ class PennyLaneCircuit:
         self.operations = []
 
         # Initialize each input qubit with Hadamard
-        for color in colors:
-            self.operations.append(("H", [color]))
-
         self.tbMeasured = list(colors)
 
+    def add_hadamards(self, colors):
+        for color in colors:
+            self.operations.append(("H", [color]))
     def add_qubit(self, color):
         """Add a new qubit (wire) if it doesn't exist."""
         if color not in self.qubitDict:

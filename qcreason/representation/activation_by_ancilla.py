@@ -38,7 +38,8 @@ def calculate_angles(canParamDict):
 
     return angleSlices
 
-def compute_and_activate(circuit, weightedFormulaDict, ancillaColor="samplingAncilla", adjoint=False):
+def compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColor="samplingAncilla", adjoint=False):
+    circuit.add_hadamards(atomColors)
     angleTuples = calculate_angles(get_color_param_dict(weightedFormulaDict))
 
     if adjoint:
@@ -79,13 +80,14 @@ def reflect_groundstate(circuit):
 
     return circuit
 
-def amplify(circuit, weightedFormulaDict, amplificationNum, ancillaColor="samplingAncilla"):
+def amplify(circuit, weightedFormulaDict, amplificationNum, atomColors, ancillaColor="samplingAncilla"):
     for amplificationStep in range(amplificationNum):
         ## Reflect on ancilla: Pauli-Z
         circuit.add_PauliZ(ancillaColor)
 
-        circuit = compute_and_activate(circuit, weightedFormulaDict, ancillaColor, adjoint=True)
+        ## Reflect on the ground state -> Missing Hadamard gates?
+        circuit = compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColor, adjoint=True)
         circuit = reflect_groundstate(circuit)
-        circuit = compute_and_activate(circuit, weightedFormulaDict, ancillaColor, adjoint=False)
+        circuit = compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColor, adjoint=False)
 
     return circuit
