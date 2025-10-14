@@ -1,1 +1,2 @@
 from qcreason.reasoning.rejection_sampling import filter_results, compute_satisfaction
+from qcreason.reasoning.forward_inference import ForwardCircuitSampler

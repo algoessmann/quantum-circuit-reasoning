@@ -19,6 +19,7 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence"
     ],
     install_requires=[
+        "pandas"
         #"qiskit>=1.2.4",
     ],
     python_requires=">=3.8",

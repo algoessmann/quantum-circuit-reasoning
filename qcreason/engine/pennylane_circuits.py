@@ -1,7 +1,7 @@
 import pennylane as qml
 
 import matplotlib.pyplot as plt
-
+import pandas as pd
 
 class PennyLaneCircuit:
     def __init__(self, colors):
@@ -136,7 +136,7 @@ class PennyLaneCircuit:
         """Execute the circuit and return measurement results."""
         circuit = self._build_qnode(shots=shots)
         samples = circuit()
-        return samples
+        return pd.DataFrame(samples, columns=self.tbMeasured)
 
     def add_controlled_PauliZ(self, controlDict, headColor):
         """Add a Pauli-Z gate to the specified qubit."""

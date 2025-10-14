@@ -73,9 +73,6 @@ def reflect_groundstate(circuit):
         circuit.add_PauliZ(circuit.colors[0])
     else:
         circuit.add_controlled_PauliZ({color : 1 for color in circuit.colors[:-1]}, circuit.colors[-1])
-        #circuit.add_slice(posDict={color : 1 for color in circuit.colors[:-1]}, headColor=circuit.colors[-1])
-        #circuit.add_PauliZ(circuit.colors[-1])
-        #circuit.add_slice(posDict={color : 1 for color in circuit.colors[:-1]}, headColor=circuit.colors[-1])
 
     for color in circuit.colors:
         circuit.add_slice(posDict={}, headColor=color)

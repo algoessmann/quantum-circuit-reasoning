@@ -1,5 +1,6 @@
 from qcreason import representation, engine, reasoning
-import pandas as pd
+
+import math
 
 circuitProvider = "PennyLaneCircuit"  # "QiskitCircuit"
 
@@ -19,17 +20,15 @@ circ.add_measurement(disVariables + ["(imp_sledz_jaszczur)", "(and_jaszczur_kacz
 shotNum = 1000
 results = circ.run(shots=shotNum)
 results = reasoning.filter_results(results)
-df = pd.DataFrame(results,
-                  columns=disVariables + ["(imp_sledz_jaszczur)", "(and_jaszczur_kaczka)"])
-print(df)
+#df = pd.DataFrame(results,
+#                  columns=disVariables + ["(imp_sledz_jaszczur)", "(and_jaszczur_kaczka)"])
 
-empSat = reasoning.compute_satisfaction(df, weightedFormulas)
+empSat = reasoning.compute_satisfaction(results, weightedFormulas)
+print("Empirical mean parameters are: {}".format(empSat))
 
-print(empSat)
 
-import math
 
-## Check empirical mean parameters
+## Check empirical mean parameters -> Could also be read of the respective columns!
 assert empSat["f1"] == 1
 assert empSat["f2"] == 0
 assert abs(empSat["f3"] - 1/(math.e+1)) < 0.1
