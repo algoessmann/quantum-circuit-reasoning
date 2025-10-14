@@ -14,7 +14,7 @@ class ForwardCircuitSampler:
         self.amplificationNum = amplificationNum
         self.shotNum = shotNum
 
-    def infer_meanParam(self, formulaKeys):
+    def infer_meanParam(self, formulaKeys, verbose=False):
         circuit = representation.get_amplified_circuit(
             {formulaKey: self.formulaDict[formulaKey] + [self.canParamDict[formulaKey]] for formulaKey in
              self.formulaDict}, self.amplificationNum, atomColors=representation.get_atoms(self.formulaDict),
@@ -23,5 +23,9 @@ class ForwardCircuitSampler:
             [representation.get_formula_string(self.formulaDict[formulaKey]) for formulaKey in formulaKeys] + [
                 representation.standardAncillaColor])
         samples = filter_results(circuit.run(shots=self.shotNum))
+
+        if verbose:
+            print("Out of {} shots, {} samples have been accepted.".format(self.shotNum, len(samples)))
+
         return {formulaKey: samples[representation.get_formula_string(self.formulaDict[formulaKey])].mean() for
                 formulaKey in formulaKeys}
