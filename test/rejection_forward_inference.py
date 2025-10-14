@@ -11,7 +11,7 @@ weightedFormulas = {
     "f3": ["or", "sledz", "kaczka", -1]
 }
 
-inferer = reasoning.ForwardCircuitSampler(
+inferer = reasoning.HLNForwardCircuitSampler(
     formulaDict={formulaKey: weightedFormulas[formulaKey][:-1] for formulaKey in weightedFormulas},
     canParamDict={formulaKey: weightedFormulas[formulaKey][-1] for formulaKey in weightedFormulas},
     circuitProvider=circuitProvider, amplificationNum=2, shotNum=1000)

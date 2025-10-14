@@ -3,7 +3,7 @@ from qcreason import representation
 from qcreason.reasoning.rejection_sampling import filter_results
 
 
-class ForwardCircuitSampler:
+class HLNForwardCircuitSampler:
 
     def __init__(self, formulaDict, canParamDict, circuitProvider=representation.standardCircuitProvider,
                  amplificationNum=2, shotNum=1000):

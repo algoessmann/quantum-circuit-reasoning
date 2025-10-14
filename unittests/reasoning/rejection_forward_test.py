@@ -14,7 +14,7 @@ class RejectionForwardTest(unittest.TestCase):
             "f3": ["or", "sledz", "kaczka", -1]
         }
         for amplificationNum in [0,1,5]: # For 2: No samples accepted
-            inferer = reasoning.ForwardCircuitSampler(
+            inferer = reasoning.HLNForwardCircuitSampler(
                 formulaDict={formulaKey: weightedFormulas[formulaKey][:-1] for formulaKey in weightedFormulas},
                 canParamDict={formulaKey: weightedFormulas[formulaKey][-1] for formulaKey in weightedFormulas},
                 circuitProvider=circuitProvider, amplificationNum=amplificationNum, shotNum=1000)

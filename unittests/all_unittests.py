@@ -1,6 +1,7 @@
 import unittest
 
 from reasoning.rejection_forward_test import RejectionForwardTest
+from reasoning.rejection_backward_test import RejectionBackwardTest
 
 from representation.controlled_preparation_test import PreparationTest
 
