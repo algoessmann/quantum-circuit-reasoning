@@ -19,7 +19,7 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence"
     ],
     install_requires=[
-        "qiskit>=1.2.4",
+        #"qiskit>=1.2.4",
     ],
     python_requires=">=3.8",
     license="AGPL-3.0",
