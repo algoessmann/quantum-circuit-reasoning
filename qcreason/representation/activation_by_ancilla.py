@@ -39,7 +39,7 @@ def calculate_angles(canParamDict):
     return angleSlices
 
 def compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColor="samplingAncilla", adjoint=False):
-    circuit.add_hadamards(atomColors)
+
     angleTuples = calculate_angles(get_color_param_dict(weightedFormulaDict))
 
     if adjoint:
@@ -47,13 +47,14 @@ def compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColor=
             circuit.add_controlled_rotation((-angleTuple[0],angleTuple[1]), ancillaColor)
         for formulaKey in list(weightedFormulaDict.keys())[::-1]:
             circuit = mf.add_formula_to_circuit(circuit, weightedFormulaDict[formulaKey][:-1])
+        circuit.add_hadamards(atomColors)
         return circuit
 
+    circuit.add_hadamards(atomColors)
     ## Compute the statistic formulas
     for formulaKey in weightedFormulaDict:
         circuit = mf.add_formula_to_circuit(circuit, weightedFormulaDict[formulaKey][:-1])
     ## Compute the sampling ancilla for activation
-
     for angleTuple in angleTuples:
         circuit.add_controlled_rotation(angleTuple, ancillaColor)
     return circuit
@@ -71,9 +72,10 @@ def reflect_groundstate(circuit):
     if len(circuit.colors) == 1:
         circuit.add_PauliZ(circuit.colors[0])
     else:
-        circuit.add_slice(posDict={color : 1 for color in circuit.colors[:-1]}, headColor=circuit.colors[-1])
-        circuit.add_PauliZ(circuit.colors[-1])
-        circuit.add_slice(posDict={color : 1 for color in circuit.colors[:-1]}, headColor=circuit.colors[-1])
+        circuit.add_controlled_PauliZ({color : 1 for color in circuit.colors[:-1]}, circuit.colors[-1])
+        #circuit.add_slice(posDict={color : 1 for color in circuit.colors[:-1]}, headColor=circuit.colors[-1])
+        #circuit.add_PauliZ(circuit.colors[-1])
+        #circuit.add_slice(posDict={color : 1 for color in circuit.colors[:-1]}, headColor=circuit.colors[-1])
 
     for color in circuit.colors:
         circuit.add_slice(posDict={}, headColor=color)

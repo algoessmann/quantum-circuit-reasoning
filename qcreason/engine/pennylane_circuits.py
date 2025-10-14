@@ -107,6 +107,9 @@ class PennyLaneCircuit:
                     qml.PauliX(wires=op[1][0])
                 elif op[0] == "Z":
                     qml.PauliZ(wires=op[1][0])
+                elif op[0] == "MCZ":
+                    controls, target = op[1], op[2]
+                    qml.ctrl(qml.PauliZ, control=controls)(wires=target)
                 elif op[0] == "MCX":
                     controls, target = op[1], op[2]
                     qml.ctrl(qml.PauliX, control=controls)(wires=target)
@@ -134,6 +137,25 @@ class PennyLaneCircuit:
         circuit = self._build_qnode(shots=shots)
         samples = circuit()
         return samples
+
+    def add_controlled_PauliZ(self, controlDict, headColor):
+        """Add a Pauli-Z gate to the specified qubit."""
+        control_colors = list(controlDict.keys())
+
+        # Ensure all control qubits and the target qubit exist
+        for color in control_colors:
+            if color not in self.qubitDict:
+                self.add_qubit(color)
+        if headColor not in self.qubitDict:
+            self.add_qubit(headColor)
+
+        # Add the gates realizing the controlled rotation
+        for inColor, val in controlDict.items():
+            if val == 0:
+                self.operations.append(("X", [inColor]))
+
+
+        self.operations.append(("MCZ", control_colors, headColor))
 
     def add_PauliZ(self, color):
         """Add a Pauli-Z gate to the specified qubit."""

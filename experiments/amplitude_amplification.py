@@ -13,7 +13,7 @@ def acceptanceRate(results):
     return sum([result[-1] for result in results])/len(results)
 
 
-amplificationNumbers = range(30)
+amplificationNumbers = range(20)
 acceptanceRates = []
 for amiplitNum in amplificationNumbers:
     circ = engine.get_circuit(circuitProvider)(disVariables)

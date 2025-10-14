@@ -12,7 +12,7 @@ weightedFormulas = {
 
 circ = engine.get_circuit(circuitProvider)(disVariables)
 circ = representation.compute_and_activate(circ, weightedFormulas, atomColors=disVariables)
-#circ = representation.amplify(circ, weightedFormulas, 1, atomColors=disVariables)
+circ = representation.amplify(circ, weightedFormulas, 1, atomColors=disVariables)
 circ.add_measurement(disVariables + ["(imp_sledz_jaszczur)", "(and_jaszczur_kaczka)"] + ["samplingAncilla"])
 #circ.visualize()
 
@@ -23,21 +23,7 @@ df = pd.DataFrame(results,
                   columns=disVariables + ["(imp_sledz_jaszczur)", "(and_jaszczur_kaczka)"])
 print(df)
 
-from tnreason import application as tnapp
-from tnreason import engine as tneng
-
-
-def compute_satisfaction(resultDf, weightedFormulas):
-    empDistribution = tnapp.get_empirical_distribution(sampleDf=resultDf)
-    satDict = dict()
-    for formulaKey in weightedFormulas:
-        satDict[formulaKey] = tneng.contract(
-            {**empDistribution.create_cores(),
-             **tnapp.create_cores_to_expressionsDict({formulaKey : weightedFormulas[formulaKey][:-1]})},
-            openColors=[])[:] / empDistribution.get_partition_function()
-    return satDict
-
-empSat = compute_satisfaction(df, weightedFormulas)
+empSat = reasoning.compute_satisfaction(df, weightedFormulas)
 
 print(empSat)
 
