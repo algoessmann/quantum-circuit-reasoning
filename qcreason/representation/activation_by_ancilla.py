@@ -46,7 +46,7 @@ def compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColor=
         for angleTuple in angleTuples[::-1]:
             circuit.add_controlled_rotation((-angleTuple[0],angleTuple[1]), ancillaColor)
         for formulaKey in list(weightedFormulaDict.keys())[::-1]:
-            circuit = mf.add_formula_to_circuit(circuit, weightedFormulaDict[formulaKey][:-1])
+            circuit = mf.add_formula_to_circuit(circuit, weightedFormulaDict[formulaKey][:-1], adjoint=True)
         circuit.add_hadamards(atomColors)
         return circuit
 

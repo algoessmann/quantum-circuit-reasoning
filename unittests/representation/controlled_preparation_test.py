@@ -6,7 +6,7 @@ circuitProvider = "PennyLaneCircuit"
 
 
 class PreparationTest(unittest.TestCase):
-    def test_statistic_preparation(self):
+    def test_statistic_preparation_amplification_free(self):
 
         circ = engine.get_circuit(circuitProvider)(["a", "b", "c"])
         circ = representation.add_formula_to_circuit(circ, ["and", ["imp", "b", "c"], ["not", "a"]])
@@ -18,6 +18,22 @@ class PreparationTest(unittest.TestCase):
             self.assertTrue(row["(not_a)"] ^ row["a"])
             self.assertTrue(row["(imp_b_c)"] == (not row["b"] or row["c"]))
             self.assertTrue(row["(and_(imp_b_c)_(not_a))"] == (row["(imp_b_c)"] and row["(not_a)"]))
+
+    def test_statistic_preparation_with_amplification(self):
+        weightedFormulaDict = {"f1": ["and", ["imp", "b", "c"], ["not", "a"], True]}
+        circ = engine.get_circuit(circuitProvider)(["a", "b", "c"])
+        circ = representation.compute_and_activate(
+            circ, weightedFormulaDict, atomColors=["a", "b", "c"]
+        )
+        for amplificationNum in [0, 1, 5]:
+            circ = representation.amplify(circ, weightedFormulaDict, amplificationNum=amplificationNum,
+                                          atomColors=["a", "b", "c"])
+            circ.add_measurement(["a", "b", "c", "(not_a)", "(imp_b_c)", "(and_(imp_b_c)_(not_a))", "samplingAncilla"])
+            samples = circ.run(shots=10)
+            for idx, row in samples.iterrows():
+                self.assertTrue(row["(not_a)"] ^ row["a"])
+                self.assertTrue(row["(imp_b_c)"] == (not row["b"] or row["c"]))
+                self.assertTrue(row["(and_(imp_b_c)_(not_a))"] == (row["(imp_b_c)"] and row["(not_a)"]))
 
     def test_statistic_ancilla(self):
 
@@ -38,3 +54,17 @@ class PreparationTest(unittest.TestCase):
         for idx, row in samples.iterrows():
             self.assertTrue(not row["samplingAncilla"] or row["(imp_sledz_jaszczur)"])
             self.assertTrue(not row["samplingAncilla"] or not row["(and_jaszczur_kaczka)"])
+
+    def test_wolfram_codes(self):
+        circ = engine.get_circuit("PennyLaneCircuit")(["a", "b", "c"])
+        circ.add_hadamards(["a", "b", "c"])
+        circ = representation.add_formula_to_circuit(circ, ["8", ["11", "a", "c"], ["1", "b"]])
+        circ.add_measurement(["a", "b", "c", "(1_b)", "(11_a_c)", "(8_(11_a_c)_(1_b))"])
+
+        # Run the circuit
+        shotNum = 10
+        results = circ.run(shots=shotNum)
+        for idx, row in results.iterrows():
+            self.assertTrue(row["b"] == (not row["(1_b)"]))  # 1 is not
+            self.assertTrue(row["(11_a_c)"] == (not row["a"] or row["c"]))  # 11 is imp
+            self.assertTrue(row["(8_(11_a_c)_(1_b))"] == (row["(11_a_c)"] and row["(1_b)"]))  # 8 is and

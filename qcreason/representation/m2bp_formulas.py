@@ -13,7 +13,7 @@ def get_formula_string(formula):
         return "(" + formula[0] + "_" + "_".join(get_formula_string(subf) for subf in formula[1:]) + ")"
 
 
-def add_formula_to_circuit(circ, formula):
+def add_formula_to_circuit(circ, formula, adjoint=False):
     """
     Recursively convert a logical formula into a quantum circuit using mod2-basis+ CP decomposition of each connective.
     :param qc:
@@ -22,6 +22,13 @@ def add_formula_to_circuit(circ, formula):
     :return:
     """
     if isinstance(formula, str):
+        return circ
+    elif adjoint: ## Do the same, but in reverse order, use that cnot is self-adjoint
+        connective = formula[0]
+        inColors = [get_formula_string(subf) for subf in formula[1:]]
+        circ.add_directed_block(mc.get_bpCP_connective(connective, inColors), get_formula_string(formula))
+        for subFormula in formula[::-1][:-1]:
+            circ = add_formula_to_circuit(circ, subFormula, adjoint=True)
         return circ
     else:
         for subFormula in formula[1:]:
