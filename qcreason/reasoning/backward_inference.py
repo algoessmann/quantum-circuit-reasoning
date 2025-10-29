@@ -38,7 +38,7 @@ class HLNBackwardCircuitAlternator:
         forwardInferer = HLNForwardCircuitSampler(self.formulaDict, self.canParamDict,
                                                   amplificationNum=self.amplificationNum, shotNum=self.shotNum,
                                                   circuitProvider=self.circuitProvider)
-        currentMean = forwardInferer.infer_meanParam([formulaKey], verbose=verbose)[formulaKey]
+        currentMean = forwardInferer.old_infer_meanParam([formulaKey], verbose=verbose)[formulaKey]
 
         if currentMean in [0,1] or np.isnan(currentMean):
             # Can happen due to limitations in the rejection sampling. Do nothing in this case.

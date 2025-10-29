@@ -23,7 +23,7 @@ class RejectionBackwardTest(unittest.TestCase):
 
         testInferer = reasoning.HLNForwardCircuitSampler(formulaDict, backwardInferer.canParamDict, shotNum=10000,
                                                          amplificationNum=2)
-        matchedDict = testInferer.infer_meanParam(["f1", "f2", "f3"])
+        matchedDict = testInferer.old_infer_meanParam(["f1", "f2", "f3"])
 
         self.assertTrue(matchedDict["f2"] == 1)
         self.assertTrue(abs(matchedDict["f1"] - 0.7) < 0.1)

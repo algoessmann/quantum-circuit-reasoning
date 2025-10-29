@@ -1,6 +1,8 @@
-def filter_results(results, ancillaColor = "samplingAncilla"):
+def filter_results(results, ancillaColors = ["samplingAncilla"]):
     ## Drop the samples where the sampling ancilla is 0
-    return results[results[ancillaColor]==1]
+    if len(ancillaColors) == 1: ## OLD behavior for single ancilla
+        return results[results[ancillaColors[0]]==1]
+    return results[results[ancillaColors].sum(axis=1)==len(ancillaColors)]
 
 
 def compute_satisfaction(resultDf, weightedFormulas):

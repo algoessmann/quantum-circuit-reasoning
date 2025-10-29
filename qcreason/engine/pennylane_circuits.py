@@ -3,25 +3,77 @@ import pennylane as qml
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from qcreason.engine import helpers as hp
+
+def get_operation_from_unitaryDict(unitaryDict):
+    if unitaryDict["unitary"] == "H":
+        return [("H", [unitaryDict["targetQubits"]])]
+    elif unitaryDict["unitary"] == "X":
+        return [("X", [unitaryDict["targetQubits"]])]
+    elif unitaryDict["unitary"] == "Z":
+        return [("Z", [unitaryDict["targetQubits"]])]
+    elif unitaryDict["unitary"] == "MCZ":
+        return [("X", [controlKey]) for controlKey in unitaryDict["control"] if
+                unitaryDict["control"][controlKey] == 0] + [
+            ("MCZ", unitaryDict["control"].keys(), unitaryDict["targetQubits"][0])] + [("X", [controlKey]) for
+                                                                                       controlKey
+                                                                                       in unitaryDict["control"] if
+                                                                                       unitaryDict["control"][
+                                                                                           controlKey] == 0]
+    elif unitaryDict["unitary"] == "MCX":
+        if len(unitaryDict["control"]) == 0:
+            return [("X", [unitaryDict["targetQubits"][0]])]
+        return [("X", [controlKey]) for controlKey in unitaryDict["control"] if
+                unitaryDict["control"][controlKey] == 0] + [
+            ("MCX", unitaryDict["control"].keys(), unitaryDict["targetQubits"][0])] + [("X", [controlKey]) for
+                                                                                       controlKey
+                                                                                       in unitaryDict["control"] if
+                                                                                       unitaryDict["control"][
+                                                                                           controlKey] == 0]
+    elif unitaryDict["unitary"] == "MCRY":
+        return [("X", [controlKey]) for controlKey in unitaryDict["control"] if unitaryDict["control"][controlKey] == 0] + [
+            ("CRot", unitaryDict["control"].keys(), unitaryDict["targetQubits"][0],
+             unitaryDict["parameters"]["angle"])] + [("X", [controlKey]) for controlKey
+                                                     in unitaryDict["control"] if
+                                                     unitaryDict["control"][controlKey] == 0]
+    else:
+        raise ValueError("Unknown unitary type: {}".format(unitaryDict["unitary"]))
+
+def read_specDict(specDict):
+    operationsDict = specDict.get("operations", [])
+    operations = []
+    for unitaryDict in operationsDict:
+        ops = get_operation_from_unitaryDict(unitaryDict)
+        operations += ops
+    colors = specDict.get("qubitColors", hp.extract_qubit_colors(operationsDict))
+    return colors, operations
+
+
 class PennyLaneCircuit:
-    def __init__(self, colors):
-        """Initialize a PennyLane circuit with Hadamard on each qubit."""
-        self.colors = list(colors)
-        self.num_qubits = len(colors)
-        self.qubitDict = {color: i for i, color in enumerate(colors)}
+    def __init__(self, colors=None, specDict=None):
+        if specDict is not None:
+            colors, operations = read_specDict(specDict)
+            self.colors = list(colors)
+            self.operations = operations
+
+        else:  ## OLD, TO BE DROPPED
+            """Initialize a PennyLane circuit."""
+            self.colors = list(colors)
+
+            # Store operations to apply later
+            self.operations = []
 
         # Create a PennyLane device
         self.dev = qml.device("default.qubit", wires=self.colors, shots=1000)
-
-        # Store operations to apply later
-        self.operations = []
-
+        self.qubitDict = {color: i for i, color in enumerate(self.colors)}
         # Initialize each input qubit with Hadamard
-        self.tbMeasured = list(colors)
+        self.tbMeasured = list(self.colors)
+        self.num_qubits = len(self.colors)
 
     def add_hadamards(self, colors):
         for color in colors:
             self.operations.append(("H", [color]))
+
     def add_qubit(self, color):
         """Add a new qubit (wire) if it doesn't exist."""
         if color not in self.qubitDict:
@@ -94,6 +146,7 @@ class PennyLaneCircuit:
         for inColor, val in controlDict.items():
             if val == 0:
                 self.operations.append(("X", [inColor]))
+
     def _build_qnode(self, shots=1000):
         """Build a QNode dynamically from the stored operations."""
         dev = qml.device("default.qubit", wires=self.colors, shots=shots)
@@ -115,7 +168,7 @@ class PennyLaneCircuit:
                     qml.ctrl(qml.PauliX, control=controls)(wires=target)
                 elif op[0] == "CRot":
                     controls, target, angle = op[1], op[2], op[3]
-    #                qml.ctrl(qml.RZ(angle), control=controls)(wires=target)
+                    #                qml.ctrl(qml.RZ(angle), control=controls)(wires=target)
                     qml.ctrl(lambda wires: qml.RY(angle, wires=wires), control=controls)(wires=target)
             return qml.sample(wires=self.tbMeasured)
 
@@ -153,7 +206,6 @@ class PennyLaneCircuit:
         for inColor, val in controlDict.items():
             if val == 0:
                 self.operations.append(("X", [inColor]))
-
 
         self.operations.append(("MCZ", control_colors, headColor))
 

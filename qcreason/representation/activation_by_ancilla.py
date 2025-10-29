@@ -2,6 +2,7 @@ from qcreason.representation import m2bp_formulas as mf
 
 import numpy as np
 
+## To be dropped, use activation_circuits and operations_transform instead
 
 def probability_to_angle(prob):
     """
@@ -11,9 +12,9 @@ def probability_to_angle(prob):
     """
     return 2 * np.arccos(np.sqrt(1 - prob))
 
-
 def calculate_angles(canParamDict):
     """
+    ! For ancilla encoding of the product of activation tensors
     Calculate the angles for controlled rotations implementing a given exponential family distribution.
     :param canParamDict: specifies the distribution by canonical parameters, keys: statistic qubit colors to formulas, values: canonical parameters
     :return:
@@ -54,6 +55,7 @@ def compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColor=
     ## Compute the statistic formulas
     for formulaKey in weightedFormulaDict:
         circuit = mf.add_formula_to_circuit(circuit, weightedFormulaDict[formulaKey][:-1])
+
     ## Compute the sampling ancilla for activation
     for angleTuple in angleTuples:
         circuit.add_controlled_rotation(angleTuple, ancillaColor)
@@ -79,14 +81,14 @@ def reflect_groundstate(circuit):
 
     return circuit
 
-def amplify(circuit, weightedFormulaDict, amplificationNum, atomColors, ancillaColor="samplingAncilla"):
+def amplify(circuit, weightedFormulaDict, amplificationNum, atomColors, ancillaColors=["samplingAncilla"]):
     for amplificationStep in range(amplificationNum):
         ## Reflect on ancilla: Pauli-Z
-        circuit.add_PauliZ(ancillaColor)
+        circuit.add_PauliZ(ancillaColors[-1])
 
         ## Reflect on the ground state -> Missing Hadamard gates?
-        circuit = compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColor, adjoint=True)
+        circuit = compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColors[-1], adjoint=True)
         circuit = reflect_groundstate(circuit)
-        circuit = compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColor, adjoint=False)
+        circuit = compute_and_activate(circuit, weightedFormulaDict, atomColors, ancillaColors[-1], adjoint=False)
 
     return circuit

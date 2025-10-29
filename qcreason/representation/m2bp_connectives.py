@@ -52,3 +52,16 @@ def get_bpCP_connective(connectiveKey, inColors):
     return [{inColor: indices[i] for i, inColor in enumerate(inColors)} for indices in
             np.ndindex(*[2 for _ in range(order)]) if
             int(binDigits[2 ** order - 1 - int("".join(map(str, indices)), 2)]) == 1]
+
+
+def get_connective_operations(connectiveKey, inColors, outColor):
+    """
+    Generate the list of operations (slices) in the mod2-basis+ CP decomposition of a connective.
+    :param connectiveKey:
+    :param inColors:
+    :param outColor:
+    :return:
+    """
+    basPlusCP = get_bpCP_connective(connectiveKey, inColors)
+    return [{"unitary": "MCX", "targetQubits": [outColor], "control": controlDict, "parameters": dict()} for controlDict
+            in basPlusCP]

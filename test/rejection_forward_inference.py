@@ -15,7 +15,7 @@ inferer = reasoning.HLNForwardCircuitSampler(
     formulaDict={formulaKey: weightedFormulas[formulaKey][:-1] for formulaKey in weightedFormulas},
     canParamDict={formulaKey: weightedFormulas[formulaKey][-1] for formulaKey in weightedFormulas},
     circuitProvider=circuitProvider, amplificationNum=2, shotNum=1000)
-empSat = inferer.infer_meanParam(["f1", "f2", "f3"])
+empSat = inferer.old_infer_meanParam(["f1", "f2", "f3"])
 print(empSat)
 assert empSat["f1"] == 1
 assert empSat["f2"] == 0

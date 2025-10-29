@@ -1,0 +1,381 @@
+{
+    "operations": [
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "c"
+            ],
+            "controlDict": {}
+        },
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "a"
+            ],
+            "controlDict": {}
+        },
+        [
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {}
+                ],
+                "parameters": {}
+            },
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {
+                        "a": 0,
+                        "c": 0
+                    }
+                ],
+                "parameters": {}
+            }
+        ],
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 0
+            },
+            "parameters": {
+                "angle": 3.141592653589793
+            }
+        },
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 1
+            },
+            "parameters": {
+                "angle": 1.7855034847842373
+            }
+        },
+        {
+            "unitary": "MCZ",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {}
+        },
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "c"
+            ],
+            "controlDict": {}
+        },
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "a"
+            ],
+            "controlDict": {}
+        },
+        [
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {}
+                ],
+                "parameters": {}
+            },
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {
+                        "a": 0,
+                        "c": 0
+                    }
+                ],
+                "parameters": {}
+            }
+        ],
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 0
+            },
+            "parameters": {
+                "angle": 3.141592653589793
+            }
+        },
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 1
+            },
+            "parameters": {
+                "angle": 1.7855034847842373
+            }
+        },
+        {
+            "unitary": "MCX",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {}
+        },
+        {
+            "unitary": "MCZ",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {}
+        },
+        {
+            "unitary": "MCX",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {}
+        },
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "c"
+            ],
+            "controlDict": {}
+        },
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "a"
+            ],
+            "controlDict": {}
+        },
+        [
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {}
+                ],
+                "parameters": {}
+            },
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {
+                        "a": 0,
+                        "c": 0
+                    }
+                ],
+                "parameters": {}
+            }
+        ],
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 0
+            },
+            "parameters": {
+                "angle": 3.141592653589793
+            }
+        },
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 1
+            },
+            "parameters": {
+                "angle": 1.7855034847842373
+            }
+        },
+        {
+            "unitary": "MCZ",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {}
+        },
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "c"
+            ],
+            "controlDict": {}
+        },
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "a"
+            ],
+            "controlDict": {}
+        },
+        [
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {}
+                ],
+                "parameters": {}
+            },
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {
+                        "a": 0,
+                        "c": 0
+                    }
+                ],
+                "parameters": {}
+            }
+        ],
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 0
+            },
+            "parameters": {
+                "angle": 3.141592653589793
+            }
+        },
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 1
+            },
+            "parameters": {
+                "angle": 1.7855034847842373
+            }
+        },
+        {
+            "unitary": "MCX",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {}
+        },
+        {
+            "unitary": "MCZ",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {}
+        },
+        {
+            "unitary": "MCX",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {}
+        },
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "c"
+            ],
+            "controlDict": {}
+        },
+        {
+            "unitary": "H",
+            "targetQubits": [
+                "a"
+            ],
+            "controlDict": {}
+        },
+        [
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {}
+                ],
+                "parameters": {}
+            },
+            {
+                "unitary": "MCX",
+                "targetQubits": [
+                    "(or_a_c)"
+                ],
+                "control": [
+                    {
+                        "a": 0,
+                        "c": 0
+                    }
+                ],
+                "parameters": {}
+            }
+        ],
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 0
+            },
+            "parameters": {
+                "angle": 3.141592653589793
+            }
+        },
+        {
+            "unitary": "MCRY",
+            "targetQubits": [
+                "ancilla_(or_a_c)"
+            ],
+            "control": {
+                "(or_a_c)": 1
+            },
+            "parameters": {
+                "angle": 1.7855034847842373
+            }
+        }
+    ],
+    "qubitColors": [
+        "(or_a_c)",
+        "c",
+        "a",
+        "ancilla_(or_a_c)"
+    ]
+}
