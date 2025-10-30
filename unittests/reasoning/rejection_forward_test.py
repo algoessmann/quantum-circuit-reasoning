@@ -18,7 +18,7 @@ class RejectionForwardTest(unittest.TestCase):
                 formulaDict={formulaKey: weightedFormulas[formulaKey][:-1] for formulaKey in weightedFormulas},
                 canParamDict={formulaKey: weightedFormulas[formulaKey][-1] for formulaKey in weightedFormulas},
                 circuitProvider=circuitProvider, amplificationNum=amplificationNum, shotNum=1000)
-            empSat = inferer.old_infer_meanParam(["f1", "f2", "f3"], verbose=False)
+            empSat = inferer.infer_meanParam(["f1", "f2", "f3"], verbose=False)
             self.assertEqual(empSat["f1"], 1)
             self.assertEqual(empSat["f2"], 0)
             self.assertTrue(abs(empSat["f3"] - 1 / (math.e + 1)) < 0.1)

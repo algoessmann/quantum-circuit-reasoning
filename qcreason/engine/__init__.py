@@ -1,3 +1,5 @@
+from qcreason.engine.helpers import extract_qubit_colors
+
 def get_circuit(circuitType="QiskitCircuit"):
     if circuitType == "QiskitCircuit":
         from qcreason.engine import qiskit_circuits as qkc
