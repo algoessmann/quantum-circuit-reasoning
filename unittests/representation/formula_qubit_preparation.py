@@ -23,7 +23,7 @@ class PreparationTest(unittest.TestCase):
         weightedFormulaDict = {"f1": ["and", ["imp", "b", "c"], ["not", "a"], True]}
         for amplificationNum in [0, 1, 5]:
             circ = engine.get_circuit(circuitProvider)(specDict={"operations": representation.amplify_ones_state(
-                representation.get_ca_operations(weightedFormulaDict),
+                representation.get_hln_ca_operations(weightedFormulaDict),
                 amplificationColors=["ancilla_(and_(imp_b_c)_(not_a))"], amplificationNum=amplificationNum
             )})
             circ.add_measurement(circ.colors)
@@ -40,7 +40,7 @@ class PreparationTest(unittest.TestCase):
             "f3": ["or", "sledz", "kaczka", -1]
         }
         circ = engine.get_circuit(circuitProvider)(specDict={"operations": representation.amplify_ones_state(
-            representation.get_ca_operations(weightedFormulas),
+            representation.get_hln_ca_operations(weightedFormulas),
             amplificationColors=["ancilla_(and_(imp_b_c)_(not_a))"], amplificationNum=0
         )})
         ancillaVariables = ['ancilla_(or_sledz_kaczka)', 'ancilla_(imp_sledz_jaszczur)',
@@ -71,7 +71,7 @@ class PreparationTest(unittest.TestCase):
         """
         circ = engine.get_circuit(circuitProvider)(
             specDict={"operations": representation.amplify_ones_state(
-                representation.get_ca_operations(weightedFormulas),
+                representation.get_hln_ca_operations(weightedFormulas),
                 amplificationColors=["ancilla_(and_sledz_kaczka)"],
                 amplificationNum=amplificationNum)})
         circ.add_measurement(["(and_sledz_kaczka)", "ancilla_(and_sledz_kaczka)"])
@@ -99,7 +99,7 @@ class PreparationTest(unittest.TestCase):
         """
         circ = engine.get_circuit(circuitProvider)(
             specDict={"operations": representation.amplify_ones_state(
-                representation.get_ca_operations(weightedFormulas),
+                representation.get_hln_ca_operations(weightedFormulas),
                 amplificationColors=["ancilla_(and_sledz_kaczka)", "ancilla_(not_sledz)"],
                 amplificationNum=amplificationNum)})
         circ.add_measurement(["(and_sledz_kaczka)", "ancilla_(and_sledz_kaczka)", "ancilla_(not_sledz)"])

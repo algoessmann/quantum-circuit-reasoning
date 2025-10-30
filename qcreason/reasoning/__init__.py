@@ -1,3 +1,4 @@
 from qcreason.reasoning.rejection_sampling import filter_results, compute_satisfaction
-from qcreason.reasoning.forward_inference import HLNForwardCircuitSampler
-from qcreason.reasoning.backward_inference import HLNBackwardCircuitAlternator
+from qcreason.reasoning.hln_forward_inference import HLNForwardCircuitSampler
+from qcreason.reasoning.hln_backward_inference import HLNBackwardCircuitAlternator
+from qcreason.reasoning.generic_contraction import QCReasonParticleContractor

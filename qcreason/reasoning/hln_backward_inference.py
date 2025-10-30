@@ -1,4 +1,4 @@
-from qcreason.reasoning.forward_inference import HLNForwardCircuitSampler
+from qcreason.reasoning.hln_forward_inference import HLNForwardCircuitSampler
 
 import numpy as np
 

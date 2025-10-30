@@ -3,7 +3,7 @@ from qcreason.representation import computation_activation_circuit as cac
 from qcreason.representation import operations_transform as ot
 import json
 
-ops = cac.get_ca_operations(
+ops = cac.get_hln_ca_operations(
     weightedFormulaDict={
         #"f1": ["and", ["imp", "b", "c"], ["not", "a"], True],
         "f2": ["or", "a", "c", -0.5]

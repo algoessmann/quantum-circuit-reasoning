@@ -17,7 +17,7 @@ class HLNForwardCircuitSampler:
 
     def infer_meanParam(self, formulaKeys, verbose=False):
         operations = representation.amplify_ones_state(
-            preparingOperations=representation.get_ca_operations(
+            preparingOperations=representation.get_hln_ca_operations(
                 {formulaKey: self.formulaDict[formulaKey] + [self.canParamDict[formulaKey]] for formulaKey in
                  self.formulaDict}),
             amplificationColors=["ancilla_" + representation.get_formula_string(self.formulaDict[formulaKey]) for

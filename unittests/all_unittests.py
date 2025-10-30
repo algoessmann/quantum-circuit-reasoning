@@ -2,6 +2,7 @@ import unittest
 
 from reasoning.rejection_forward_test import RejectionForwardTest
 from reasoning.rejection_backward_test import RejectionBackwardTest
+from reasoning.contraction_test import ContractionTest
 
 from representation.formula_qubit_preparation import PreparationTest
 
