@@ -5,5 +5,6 @@ from reasoning.rejection_backward_test import RejectionBackwardTest
 from reasoning.contraction_test import ContractionTest
 
 from representation.formula_qubit_preparation import PreparationTest
+from representation.inversion_test import InversionTest
 
 unittest.main()

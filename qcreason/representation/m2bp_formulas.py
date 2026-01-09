@@ -25,29 +25,31 @@ def get_formula_string(formula):
 #         return set().union(*[extract_atoms(subf) for subf in formula[1:]])
 
 
-def generate_formula_operations(formula, ajoint=False):
+def generate_formula_operations(formula, ajoint=False, headColor=None):
     """
     Generate the list of operations (connectives) in a formula in order of application.
     :param formula:
     :return:
     """
+    if headColor is None:
+        headColor = get_formula_string(formula)
     if isinstance(formula, str):
         return []
 
     elif not ajoint:
         ops = []
         for subFormula in formula[1:]:
-            ops = ops + generate_formula_operations(subFormula)
+            ops = ops + generate_formula_operations(subFormula, headColor=None)
 
         ops += mc.get_connective_operations(formula[0], [get_formula_string(subf) for subf in formula[1:]],
-                                                get_formula_string(formula))
+                                            headColor)
         return ops
     else:
         ops = []
         ops += mc.get_connective_operations(formula[0], [get_formula_string(subf) for subf in formula[1:]],
-                                                get_formula_string(formula))
+                                            headColor)
         for subFormula in formula[::-1][:-1]:
-            ops += generate_formula_operations(subFormula)
+            ops += generate_formula_operations(subFormula, headColor=None)
 
         return ops
 

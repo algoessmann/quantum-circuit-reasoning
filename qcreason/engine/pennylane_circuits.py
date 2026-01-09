@@ -63,7 +63,7 @@ class PennyLaneCircuit:
             # Store operations to apply later
             self.operations = []
 
-        # Create a PennyLane device
+        # Create a PennyLane device: Starts in the ground state 0...0
         self.dev = qml.device("default.qubit", wires=self.colors, shots=1000)
         self.qubitDict = {color: i for i, color in enumerate(self.colors)}
         # Initialize each input qubit with Hadamard
@@ -229,7 +229,7 @@ if __name__ == "__main__":
     # Measure both qubits
     qc.add_measurement(["red", "blue"])
 
-    # qc.visualize()
+    qc.visualize()
 
     # Run the circuit
     results = qc.run(shots=10000)
