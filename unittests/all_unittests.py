@@ -6,5 +6,6 @@ from reasoning.contraction_test import ContractionTest
 
 from representation.formula_qubit_preparation import PreparationTest
 from representation.inversion_test import InversionTest
+from representation.deutsch_josza import DeutschJoszaTest
 
 unittest.main()
